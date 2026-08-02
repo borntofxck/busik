@@ -38,8 +38,6 @@ let supplyId = 1;
 export function GameLoop() {
   const camera = useThree((s) => s.camera);
 
-  const camYaw = useRef(0);
-  const desiredCamYaw = useRef(0);
   const camInit = useRef(false);
 
   const prevPhase = useRef<string>('menu');
@@ -69,8 +67,6 @@ export function GameLoop() {
       ambientTimer.current = 20;
       nearMissTimer.current = 0;
       supplyTimer.current = 3;
-      camYaw.current = 0;
-      desiredCamYaw.current = 0;
       camInit.current = false;
       store.setBusCount(0);
       store.setSupplyItems([]);
@@ -136,36 +132,24 @@ export function GameLoop() {
     if (boostActive) speed *= s.boostMul;
     s.speedMul = speed / PLAYER.WALK_SPEED;
 
-    // ── движение игрока (в системе координат камеры) ──
+    // ── движение игрока (фиксированные экранные оси: W — от камеры, D — вправо) ──
     if (moving) {
       const mag = Math.min(1, Math.hypot(input.forward, input.strafe));
-      const fx = Math.sin(camYaw.current);
-      const fz = Math.cos(camYaw.current);
-      const rx = Math.cos(camYaw.current);
-      const rz = -Math.sin(camYaw.current);
-      let mx = fx * input.forward + rx * input.strafe;
-      let mz = fz * input.forward + rz * input.strafe;
+      let mx = input.strafe; // +X — вправо по экрану
+      let mz = input.forward; // +Z — вглубь экрана (от камеры)
       const ml = Math.hypot(mx, mz) || 1;
       mx /= ml;
       mz /= ml;
       p.pos.x += mx * speed * mag * dt;
       p.pos.z += mz * speed * mag * dt;
       p.heading = Math.atan2(mx, mz);
-      desiredCamYaw.current = p.heading;
     }
     resolveBuildingCollision(p.pos, PLAYER.RADIUS);
 
-    // ── камера (третье лицо, плавно) ──
-    camYaw.current = lerpAngle(camYaw.current, desiredCamYaw.current, dt * 2.4);
+    // ── камера (третье лицо, стабильная — сзади игрока, без разворотов) ──
     const camDist = 9.5;
     const camH = 5.2;
-    const cfx = Math.sin(camYaw.current);
-    const cfz = Math.cos(camYaw.current);
-    const targetPos = new THREE.Vector3(
-      p.pos.x - cfx * camDist,
-      camH,
-      p.pos.z - cfz * camDist,
-    );
+    const targetPos = new THREE.Vector3(p.pos.x, camH, p.pos.z - camDist);
     if (!camInit.current) {
       camera.position.copy(targetPos);
       camInit.current = true;

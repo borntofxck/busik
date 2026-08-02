@@ -16,8 +16,8 @@ import { GameLoop } from '../../systems/GameLoop';
 export function Scene() {
   return (
     <>
-      <color attach="background" args={['#0b100e']} />
-      <fogExp2 attach="fog" args={['#0f1512', 0.017]} />
+      <color attach="background" args={['#182220']} />
+      <fogExp2 attach="fog" args={['#1c2622', 0.009]} />
 
       <Lighting />
       <Rain />

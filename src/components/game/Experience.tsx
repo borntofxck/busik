@@ -16,7 +16,8 @@ export function Experience() {
       }}
       camera={{ fov: 55, near: 0.1, far: 320, position: [0, 6, 30] }}
       onCreated={({ gl }) => {
-        gl.setClearColor('#0b100e');
+        gl.setClearColor('#182220');
+        gl.toneMappingExposure = 1.25;
       }}
     >
       <Suspense fallback={null}>

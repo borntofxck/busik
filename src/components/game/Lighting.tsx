@@ -19,12 +19,12 @@ export function Lighting() {
 
   return (
     <>
-      <ambientLight intensity={0.32} color="#4a5560" />
-      <hemisphereLight args={['#3a4550', '#1a1c14', 0.5]} />
+      <ambientLight intensity={0.62} color="#6a7684" />
+      <hemisphereLight args={['#5a6a78', '#2a2c22', 0.95]} />
       <directionalLight
         ref={dir}
-        color="#9fb4c8"
-        intensity={0.7}
+        color="#c4d2e0"
+        intensity={1.25}
         castShadow
         shadow-mapSize={[2048, 2048]}
         shadow-camera-near={1}
@@ -38,7 +38,7 @@ export function Lighting() {
         <object3D ref={target} attach="target" />
       </directionalLight>
       {/* холодная подсветка неба над сценой */}
-      <directionalLight color="#243040" intensity={0.25} position={[20, 40, 30]} />
+      <directionalLight color="#3a4a5c" intensity={0.5} position={[20, 40, 30]} />
     </>
   );
 }
